@@ -7,6 +7,8 @@ import tech.guyi.component.sql.plus.executor.SqlPlusExecutor;
 import tech.guyi.component.sql.plus.executor.TableSqlPlusExecutor;
 import tech.guyi.component.sql.plus.sql.plus.SqlPlus;
 import tech.guyi.component.sql.plus.sql.plus.SqlPlusFactory;
+import tech.guyi.component.sql.plus.sql.plus.impl.SqlPlusDelete;
+import tech.guyi.component.sql.plus.sql.plus.impl.SqlPlusInsert;
 import tech.guyi.component.sql.plus.sql.plus.impl.SqlPlusSelect;
 import tech.guyi.component.sql.plus.sql.plus.impl.SqlPlusUpdate;
 import tech.guyi.component.sql.plus.suppliper.EntityNameSupplier;
@@ -68,6 +70,12 @@ public class PlusConnection implements Connection {
                     }
                     if (plus.get() instanceof SqlPlusUpdate) {
                         executor.execute((SqlPlusUpdate) plus.get());
+                    }
+                    if (plus.get() instanceof SqlPlusInsert) {
+                        executor.execute((SqlPlusInsert) plus.get());
+                    }
+                    if (plus.get() instanceof SqlPlusDelete) {
+                        executor.execute((SqlPlusDelete) plus.get());
                     }
                 });
         System.out.println(plus.get().toSql());

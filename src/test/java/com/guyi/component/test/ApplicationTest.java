@@ -44,8 +44,11 @@ public class ApplicationTest {
 
     @Test
     public void update() {
-        User user = this.repository.findByAge(20);
-        user.setSex(0);
+        User user = new User();
+        user.setUsername("王武");
+        user.setSex(1);
+        user.setAge(30);
+        user.setCreateTime(300);
         this.repository.saveAndFlush(user);
     }
 

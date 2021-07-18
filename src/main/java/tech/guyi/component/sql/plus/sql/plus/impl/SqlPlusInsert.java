@@ -2,15 +2,12 @@ package tech.guyi.component.sql.plus.sql.plus.impl;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
-import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
+import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateSetItem;
-import com.alibaba.druid.sql.ast.statement.SQLUpdateStatement;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import tech.guyi.component.sql.plus.context.SqlPlusContext;
 import tech.guyi.component.sql.plus.sql.entry.FieldValue;
-import tech.guyi.component.sql.plus.sql.enums.SqlValueType;
 import tech.guyi.component.sql.plus.sql.plus.SqlPlus;
 import tech.guyi.component.sql.plus.suppliper.EntityNameSupplier;
 
@@ -23,27 +20,19 @@ import java.util.Map;
  */
 @Getter
 @AllArgsConstructor
-public class SqlPlusUpdate implements SqlPlus {
+public class SqlPlusInsert implements SqlPlus {
 
     private final DbType dbType;
-    private final SQLUpdateStatement statement;
+    private final SQLInsertStatement statement;
     private final EntityNameSupplier nameSupplier;
-
-    private SQLUpdateSetItem toUpdateItem(FieldValue value, String table, EntityNameSupplier supplier) {
-        SQLUpdateSetItem item = new SQLUpdateSetItem();
-        item.setColumn(new SQLIdentifierExpr(supplier.getField(table, value.getName()).orElse(value.getName())));
-        item.setValue(SqlValueType.findByName(value.getValue().getClass().getSimpleName()).getCreator().apply(value.getValue()));
-        return item;
-    }
 
     @Override
     public SQLExpr getWhere() {
-        return this.statement.getWhere();
+        return null;
     }
 
     @Override
     public void setWhere(SQLExpr where) {
-        this.statement.setWhere(where);
     }
 
     @Override
@@ -51,12 +40,12 @@ public class SqlPlusUpdate implements SqlPlus {
         return this.statement.getTableSource();
     }
 
-    public void update(List<FieldValue> values) {
+    public void insert(List<FieldValue> values) {
         String table = this.getTableName();
 
         Map<String, Integer> origins = new HashMap<>();
-        for (int i = 0; i < this.statement.getItems().size(); i++) {
-            SQLUpdateSetItem item = this.statement.getItems().get(i);
+        for (int i = 0; i < this.statement.getColumns().size(); i++) {
+            SQLExpr item = this.statement.getColumns().get(i);
             origins.put(this.nameSupplier.getField(table, item.toString()).orElse(item.toString()), i + 1);
         }
 
@@ -64,7 +53,7 @@ public class SqlPlusUpdate implements SqlPlus {
             if (origins.containsKey(value.getName())) {
                 SqlPlusContext.setUpdateParameter(origins.get(value.getName()), value.getValue());
             } else {
-                this.statement.addItem(this.toUpdateItem(value, table, this.nameSupplier));
+                this.statement.getValuesList().forEach(clause -> clause.addValue(value.getValue()));
             }
         });
     }

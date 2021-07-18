@@ -48,14 +48,13 @@ public interface SqlPlus {
     default void where(List<FieldCondition> entries) {
         String table = this.getTableName();
         List<SQLBinaryOpExpr> es = entries.stream()
-                .peek(e -> e.setName(this.getNameSupplier().getField(table, e.getName()).orElse(e.getName())))
                 .map(FieldCondition::to)
                 .map(field -> {
                     SQLBinaryOpExpr expr = new SQLBinaryOpExpr();
                     expr.setDbType(this.getDbType());
                     expr.setRight(field.getValueExpr());
                     expr.setOperator(field.getOperator());
-                    expr.setLeft(field.getNameExpr(this.getTable().getAlias()));
+                    expr.setLeft(field.getNameExpr(this.getTable().getAlias(), this.getNameSupplier().getField(table, field.getName()).orElse(field.getName())));
                     return expr;
                 })
                 .collect(Collectors.toList());

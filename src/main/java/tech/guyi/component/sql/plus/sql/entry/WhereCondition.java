@@ -21,11 +21,12 @@ public class WhereCondition {
     private SqlValueType type;
     private SQLBinaryOperator operator;
 
-    public SQLExpr getNameExpr(String alias) {
+    public SQLExpr getNameExpr(String alias, String name) {
+        String tmpName = Optional.ofNullable(name).orElse(this.name);
         return new SQLIdentifierExpr(
                 Optional.ofNullable(alias)
-                        .map(as -> String.format("%s.%s", alias, this.name))
-                        .orElse(this.name));
+                        .map(as -> String.format("%s.%s", alias, tmpName))
+                        .orElse(tmpName));
     }
 
     public SQLExpr getValueExpr() {

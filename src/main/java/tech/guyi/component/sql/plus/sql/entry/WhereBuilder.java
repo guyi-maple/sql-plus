@@ -23,8 +23,8 @@ public class WhereBuilder {
         return this;
     }
 
-    public <T> WhereBuilder condition(String name, T value, String operator, Class<T> classes) {
-        return this.condition(new FieldCondition(name, value, operator, classes));
+    public WhereBuilder condition(String name, Object value, String operator) {
+        return this.condition(new FieldCondition(name, value, operator));
     }
 
     public void end() {

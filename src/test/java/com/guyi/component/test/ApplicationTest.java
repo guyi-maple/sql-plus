@@ -37,9 +37,16 @@ public class ApplicationTest {
         this.repository.save(user);
     }
 
-    @Test
+//    @Test
     public void select() {
         System.out.println(this.repository.findAll());
+    }
+
+    @Test
+    public void update() {
+        User user = this.repository.findByAge(20);
+        user.setSex(0);
+        this.repository.saveAndFlush(user);
     }
 
 }

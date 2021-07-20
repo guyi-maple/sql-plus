@@ -2,6 +2,7 @@ package com.guyi.component.test;
 
 import com.guyi.component.test.db.User;
 import com.guyi.component.test.db.UserRepository;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -36,7 +37,7 @@ public class ApplicationTest {
         this.repository.save(user);
     }
 
-//    @Test
+    @Test
     public void select() {
         System.out.println(this.repository.findAll());
     }

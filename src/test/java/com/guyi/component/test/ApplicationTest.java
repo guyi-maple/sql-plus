@@ -2,7 +2,6 @@ package com.guyi.component.test;
 
 import com.guyi.component.test.db.User;
 import com.guyi.component.test.db.UserRepository;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -42,7 +41,7 @@ public class ApplicationTest {
         System.out.println(this.repository.findAll());
     }
 
-    @Test
+//    @Test
     public void update() {
         User user = new User();
         user.setUsername("王武");

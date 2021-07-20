@@ -3,6 +3,7 @@ package tech.guyi.component.sql.plus.datasource;
 import com.alibaba.druid.util.JdbcConstants;
 import org.springframework.context.ApplicationContext;
 import tech.guyi.component.sql.plus.executor.ClassSqlPlusExecutor;
+import tech.guyi.component.sql.plus.executor.FieldSqlPlusExecutor;
 import tech.guyi.component.sql.plus.executor.SqlPlusExecutor;
 import tech.guyi.component.sql.plus.executor.TableSqlPlusExecutor;
 import tech.guyi.component.sql.plus.sql.plus.SqlPlus;
@@ -43,14 +44,16 @@ public class PlusConnection implements Connection {
     }
 
     private boolean filter(String table, SqlPlusExecutor executor) {
-        String target = table;
         if (executor instanceof ClassSqlPlusExecutor) {
-            target = this.supplier.getTable(((ClassSqlPlusExecutor) executor).forClass()).orElse(target);
+            return this.supplier.getTable(((ClassSqlPlusExecutor) executor).forClass()).map(table::equals).orElse(false);
         }
         if (executor instanceof TableSqlPlusExecutor) {
-            target = ((TableSqlPlusExecutor) executor).forTable();
+            return ((TableSqlPlusExecutor) executor).forTable().equals(table);
         }
-        return table.equals(target);
+        if (executor instanceof FieldSqlPlusExecutor) {
+            return this.supplier.getField(table, ((FieldSqlPlusExecutor) executor).forField()).isPresent();
+        }
+        return true;
     }
 
     private String plus(String sql) {
@@ -78,7 +81,6 @@ public class PlusConnection implements Connection {
                         executor.execute((SqlPlusDelete) plus.get());
                     }
                 });
-        System.out.println(plus.get().toSql());
         return plus.get().toSql();
     }
 

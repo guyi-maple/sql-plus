@@ -45,7 +45,7 @@ public interface SqlPlus {
         return new WhereBuilder(this);
     }
 
-    default void where(List<FieldCondition> entries) {
+    default void where(List<FieldCondition> entries, boolean and) {
         String table = this.getTableName();
         List<SQLBinaryOpExpr> es = entries.stream()
                 .map(FieldCondition::to)
@@ -93,7 +93,7 @@ public interface SqlPlus {
                             expr.setLeft(origin);
                             expr.setRight(where);
                             expr.setDbType(this.getDbType());
-                            expr.setOperator(SQLBinaryOperator.BooleanAnd);
+                            expr.setOperator(and ? SQLBinaryOperator.BooleanAnd : SQLBinaryOperator.BooleanOr);
                             return expr;
                         })
                         .map(e -> (SQLExpr) e)

@@ -61,8 +61,9 @@ public class SqlPlusUpdate implements SqlPlus {
         }
 
         values.forEach(value -> {
-            if (origins.containsKey(value.getName())) {
-                SqlPlusContext.setUpdateParameter(origins.get(value.getName()), value.getValue());
+            String name = this.nameSupplier.getField(this.getTableName(), value.getName()).orElse(value.getName());
+            if (origins.containsKey(name)) {
+                SqlPlusContext.setUpdateParameter(origins.get(name), value.getValue());
             } else {
                 this.statement.addItem(this.toUpdateItem(value, table, this.nameSupplier));
             }

@@ -2,6 +2,7 @@ package tech.guyi.component.sql.plus.sql.plus.impl;
 
 import com.alibaba.druid.DbType;
 import com.alibaba.druid.sql.ast.SQLExpr;
+import com.alibaba.druid.sql.ast.expr.SQLIdentifierExpr;
 import com.alibaba.druid.sql.ast.statement.SQLInsertStatement;
 import com.alibaba.druid.sql.ast.statement.SQLTableSource;
 import lombok.AllArgsConstructor;
@@ -50,9 +51,11 @@ public class SqlPlusInsert implements SqlPlus {
         }
 
         values.forEach(value -> {
-            if (origins.containsKey(value.getName())) {
-                SqlPlusContext.setUpdateParameter(origins.get(value.getName()), value.getValue());
+            String name = this.nameSupplier.getField(this.getTableName(), value.getName()).orElse(value.getName());
+            if (origins.containsKey(name)) {
+                SqlPlusContext.setUpdateParameter(origins.get(name), value.getValue());
             } else {
+                this.statement.getColumns().add(new SQLIdentifierExpr(name));
                 this.statement.getValuesList().forEach(clause -> clause.addValue(value.getValue()));
             }
         });

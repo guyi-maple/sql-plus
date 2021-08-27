@@ -81,7 +81,9 @@ public class PlusConnection implements Connection {
                         executor.execute((SqlPlusDelete) plus.get());
                     }
                 });
-        return plus.get().toSql();
+        sql = plus.get().toSql();
+        System.out.println(sql);
+        return sql;
     }
 
     @Override

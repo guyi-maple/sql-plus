@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.hibernate.SessionFactory;
 import org.hibernate.metamodel.internal.MetamodelImpl;
+import org.hibernate.persister.entity.HibernateColumnsWrapper;
 import org.hibernate.persister.entity.SingleTableEntityPersister;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
@@ -29,6 +30,8 @@ public class HibernateFieldNameSupplier implements EntityNameSupplier, Initializ
         private final Map<String, String> fields;
     }
 
+    private final HibernateColumnsWrapper wrapper = new HibernateColumnsWrapper();
+
     private final Map<String, HibernateEntity> entityMap = new HashMap<>();
     private final Map<String, HibernateEntity> tableMap = new HashMap<>();
 
@@ -46,11 +49,7 @@ public class HibernateFieldNameSupplier implements EntityNameSupplier, Initializ
                 .stream()
                 .map(e -> (SingleTableEntityPersister) e)
                 .forEach(e -> {
-                    Map<String, String> columns = new HashMap<>();
-                    for (int i = 0; i <= e.getSubclassTableSpan(); i++) {
-                        String name = e.getSubclassPropertyName(i);
-                        columns.put(name, e.getSubclassPropertyColumnNames(name)[0]);
-                    }
+                    Map<String, String> columns = this.wrapper.getColumns(e);
                     HibernateEntity field = new HibernateEntity(
                             e.getMappedClass().getSimpleName(),
                             e.getTableName(),

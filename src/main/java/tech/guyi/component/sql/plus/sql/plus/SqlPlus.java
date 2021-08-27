@@ -45,6 +45,10 @@ public interface SqlPlus {
         return new WhereBuilder(this);
     }
 
+    default void where(List<FieldCondition> entries) {
+        this.where(entries, true);
+    }
+
     default void where(List<FieldCondition> entries, boolean and) {
         String table = this.getTableName();
         List<SQLBinaryOpExpr> es = entries.stream()
@@ -70,7 +74,7 @@ public interface SqlPlus {
             SQLBinaryOpExpr parent = new SQLBinaryOpExpr();
             parent.setDbType(this.getDbType());
             parent.setLeft(es.get(0));
-            parent.setOperator(SQLBinaryOperator.BooleanAnd);
+            parent.setOperator(and ? SQLBinaryOperator.BooleanAnd : SQLBinaryOperator.BooleanOr);
             for (int i = 1; i < es.size(); i++) {
                 if (i == es.size() - 1) {
                     parent.setRight(es.get(i));
@@ -78,7 +82,7 @@ public interface SqlPlus {
                     SQLBinaryOpExpr tmp = new SQLBinaryOpExpr();
                     tmp.setDbType(this.getDbType());
                     tmp.setLeft(es.get(i));
-                    tmp.setOperator(SQLBinaryOperator.BooleanAnd);
+                    tmp.setOperator(and ? SQLBinaryOperator.BooleanAnd : SQLBinaryOperator.BooleanOr);
                     parent.setRight(tmp);
                     parent = tmp;
                 }
@@ -93,7 +97,7 @@ public interface SqlPlus {
                             expr.setLeft(origin);
                             expr.setRight(where);
                             expr.setDbType(this.getDbType());
-                            expr.setOperator(and ? SQLBinaryOperator.BooleanAnd : SQLBinaryOperator.BooleanOr);
+                            expr.setOperator(SQLBinaryOperator.BooleanAnd);
                             return expr;
                         })
                         .map(e -> (SQLExpr) e)

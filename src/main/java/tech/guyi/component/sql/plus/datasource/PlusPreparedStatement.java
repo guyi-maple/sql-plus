@@ -37,7 +37,12 @@ public class PlusPreparedStatement implements PreparedStatement {
 
     @Override
     public void setNull(int parameterIndex, int sqlType) throws SQLException {
-        this.statement.setNull(parameterIndex, sqlType);
+        Object value = this.getParameter(parameterIndex, null);
+        if (value == null) {
+            this.statement.setNull(parameterIndex, sqlType);
+        } else {
+            this.statement.setObject(parameterIndex, value);
+        }
     }
 
     @Override
@@ -192,7 +197,12 @@ public class PlusPreparedStatement implements PreparedStatement {
 
     @Override
     public void setNull(int parameterIndex, int sqlType, String typeName) throws SQLException {
-        this.statement.setNull(parameterIndex, sqlType, typeName);
+        Object value = this.getParameter(parameterIndex, null);
+        if (value == null) {
+            this.statement.setNull(parameterIndex, sqlType, typeName);
+        } else {
+            this.statement.setObject(parameterIndex, value);
+        }
     }
 
     @Override

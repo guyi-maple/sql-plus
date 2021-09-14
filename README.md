@@ -1,6 +1,3 @@
-# data-permission
-基于SQL修改的数据权限
-
 ## 运行时修改SQL
 
 实现接口 [SqlPlusExecutor](./src/main/java/tech/guyi/component/sql/plus/executor/SqlPlusExecutor.java) , 并将实现类放入Spring容器中, 即可在运行时修改SQL。

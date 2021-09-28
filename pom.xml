@@ -6,7 +6,7 @@
 
     <groupId>tech.guyi.component</groupId>
     <artifactId>sql-plus</artifactId>
-    <version>0.0.0.1</version>
+    <version>0.0.0.2</version>
 
     <name>sql-plus</name>
     <url>https://github.com/guyi-maple</url>

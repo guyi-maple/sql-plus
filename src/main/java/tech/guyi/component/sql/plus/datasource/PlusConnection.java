@@ -82,7 +82,6 @@ public class PlusConnection implements Connection {
                     }
                 });
         sql = plus.get().toSql();
-        System.out.println(sql);
         return sql;
     }
 
